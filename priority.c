@@ -1,15 +1,19 @@
-//  priorityTest.c
-//  V1, 05/14/15
+//  priority.c
+//  V2, 05/21/15
 //  Created by Jeffrey
 
+#include "heapFunctions.h"
 #include "priorityFunctions.h"
 
 int main(int argc, char *argv[]) {
-
+	
+	Heap *toSort;
     int size = argc - 2;
-    
-    int toSort[size];
-    
+  	
+  	toSort = malloc(sizeof(Heap) + size*sizeof(int));
+    toSort->size = size;
+    toSort->length = size;
+  
     int i;
     
     if (argc <= 2) {
@@ -19,18 +23,27 @@ int main(int argc, char *argv[]) {
     else {
 
         for (i = 2; i < argc; i++) {
-            toSort[i-2] = atoi(argv[i]);
+            toSort->arr[i-2] = atoi(argv[i]);
         }
         
         switch (tolower(argv[1][0])) {
             case 'h':
-                heapSort(toSort, size);
-                printArray(toSort, size);
+                heapSort(toSort);
+                printArray(toSort);
+                break;
+            case 'p':
+            	build_max_heap(toSort);
+                preformPriority(toSort);
+                printArray(toSort);
                 break;
             default:
                 break;
         }
+        
     }
+    
+    printf("\n");
+    free(toSort);
     
     return 0;
 }

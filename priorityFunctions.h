@@ -1,5 +1,5 @@
 //  priorityFunctions.h
-//  V1, 05/14/15
+//  V2, 05/21/15
 //  Created by Jeffrey
 
 // Includes the neccessary header files
@@ -9,155 +9,61 @@
 #include <ctype.h>
 #include <assert.h>
 
-#define TRUE 1
-#define FALSE 0
-
-struct heap
-{
-    int size;
-    int arr[];
-    
-};
-
-int parent(i)
-{
-    return i/2;
+int heap_maximum(Heap *my_heap) {
+	return my_heap->arr[0];
 }
-int left(i)
-{
-    return (2*i)+1;
-}
-int right(i)
-{
-    return (2*i)+2;
+int heap_extract_max(Heap *my_heap) {
+	if (my_heap->size < 1)
+		exit(0);
+	int max = my_heap->arr[0];
+	my_heap->size = my_heap->size - 1;
+	my_heap->length = my_heap->length - 1;
+	my_heap->arr[0] = my_heap->arr[my_heap->length];
+	max_heapify(my_heap, 0);
+	return max;
 }
 
-void swap(int *index1, int *index2) {
-    
-    int temp;
-    
-    temp = *index1;
-    *index1 = *index2;
-    *index2 = temp;
-    
+void heap_increase_key(Heap *my_heap, int i, int key) {	
+	if (key < my_heap->arr[i])
+		exit(0);
+	my_heap->arr[i] = key;
+	while (i > 0 && my_heap->arr[parent(i)] < my_heap->arr[i]) {
+		swap(&my_heap->arr[i], &my_heap->arr[parent(i)]);
+		i = parent(i);
+	}
 }
 
-void maxHeapify(struct heap* maxHeap, int i)
-{
-    
-    int l = left(i);
-    int r = right(i);
-    int largest = i;
-    
-    if (l <= maxHeap->size && maxHeap->arr[l] > maxHeap->arr[largest])
-    {
-        largest = l;
+void max_heap_insert(Heap *my_heap, int key) {
+	my_heap->size = my_heap->size + 1;
+	my_heap = realloc(my_heap, my_heap->size*sizeof(int));
+	my_heap->arr[my_heap->size-1] = -INT_MAX;
+	heap_increase_key(my_heap, my_heap->size, key);
+}
+
+void preformPriority(Heap *my_heap) {
+	int loc, key;
+	char answer = 0;                   
+	printf("Priority queue function:");
+  	scanf("%c", &answer);
+  	switch (answer) {
+            case 'm':
+            	printf("Max: %d\n", heap_maximum(my_heap));
+            	break;
+            case 'e':
+            	printf("Max: %d\n", heap_extract_max(my_heap));
+            	break;
+            case '+':
+            	printf("Enter location:");
+  				scanf("%d", &loc);
+  				printf("Enter key:");
+  				scanf("%d", &key);
+            	heap_increase_key(my_heap, loc, key);
+            	break;
+            case 'i':
+            	printf("Enter key:");
+  				scanf("%d", &key);
+            	max_heap_insert(my_heap, key);
+            default:
+            	break;
     }
-    if (r <= maxHeap->size && maxHeap->arr[r] > maxHeap->arr[largest])
-    {
-        largest = r;
-    }
-    if (largest != i)
-    {
-        swap(&maxHeap->arr[largest], &maxHeap->arr[i]);
-        maxHeapify(maxHeap, largest);
-    }
-    
-}
-
-struct heap* buildMaxHeap(int arr[], int size)
-{
-    struct heap* maxHeap =(struct heap*) malloc(sizeof(struct heap));
-    
-    for (int i = (maxHeap->size - 2) / 2; i >= 0; --i)
-    {
-        maxHeapify(maxHeap, i);
-    }
-    
-    return maxHeap;
-    
-}
-
-void heapSort(int arr[], int size)
-{
-    struct heap* maxHeap = buildMaxHeap(arr, size);
-    while (maxHeap->size > 1)
-    {
-        swap(&maxHeap->arr[0], &maxHeap->arr[maxHeap->size - 1]);
-        --maxHeap->size;
-        maxHeapify(maxHeap, 0);
-    }
-}
-
-int heapMaximum(int arr[], int size)
-{
-    struct heap* maxHeap = buildMaxHeap(arr, size);
-    return maxHeap->arr[0];
-}
-
-int heapExtractMax(int arr[], int size)
-{
-    struct heap* maxHeap = buildMaxHeap(arr, size);
-    
-    if (maxHeap->size < 1)
-    {
-        exit(1);
-    }
-    
-    int max = maxHeap->arr[0];
-    
-    maxHeap->arr[0] = arr[maxHeap->size];
-    
-    maxHeap->size = maxHeap->size - 1;
-    
-    maxHeapify(maxHeap, 0);
-    
-    return max;
-    
-}
-
-void heapIncreaseKey(int arr[], int size, int i, int key)
-{
-    struct heap* maxHeap = buildMaxHeap(arr, size);
-    
-    if (key < maxHeap->arr[i])
-    {
-        exit(1);
-    }
-    
-    maxHeap->arr[i] = key;
-    
-    while (i > 0 && maxHeap->arr[parent(i)] < maxHeap->arr[i]) {
-        swap(&maxHeap->arr[i], &maxHeap->arr[parent(i)]);
-        i = parent(i);
-    }
-    
-}
-
-void maxHeapInsert(int arr[], int size, int key)
-{
-    struct heap* maxHeap = buildMaxHeap(arr, size);
-    
-    maxHeap->size = maxHeap->size + 1;
-    maxHeap->arr[maxHeap->size - 1] = -INT_MAX;
-    heapIncreaseKey(maxHeap->arr, maxHeap->size, maxHeap->size, key);
-}
-
-
-int compareArrays(int arr1[], int arr2[], int n) {
-    
-    int i;
-    
-    for (i=0; i < n; i++) {
-        if (arr1[i] != arr2[i]) {
-            return FALSE;
-        }
-    }
-    return TRUE;
-}
-
-void printArray(int arr[], int n) {
-        
-    printf("%d ", heapMaximum(arr, n));
-    
 }

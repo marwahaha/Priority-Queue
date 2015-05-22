@@ -1,7 +1,8 @@
 //  priorityTest.c
-//  V1, 05/14/15
+//  V2, 05/21/15
 //  Created by Jeffrey
 
+#include "heapFunctions.h"
 #include "priorityFunctions.h"
 
 int main() {
@@ -20,6 +21,8 @@ int main() {
     int sortedSingle[1] = {1};
     int sortedNone[5] = {};
     
+    Heap *toSort;
+    
     // Creates an array of all the unsorted arrays
     int *arraysToSort[5] = {testSort, testSortRep, testSortOdd, testSortSingle, testSortNone};
     // Creates an array of all the sorted arrays
@@ -27,16 +30,47 @@ int main() {
     // Stores the size of each array
     int sizeToSort[5] = {10, 20, 7, 1, 5};
     
-    int i;
-    
-    // For each array to sort, see that the function 'quicksort' sorts it correctly
-    for (i=0; i<5; i++) {
+    // For each array to sort, see that the function 'heapSort' sorts it correctly
+    for (int i=0; i<5; i++) {
         
-        heapSort(arraysToSort[i], sizeToSort[i]);
-        assert(compareArrays(arraysToSort[i], arraysToMatch[i], sizeToSort[i]) == TRUE);
+        int size = sizeToSort[i];
         
+  		toSort = malloc(sizeof(Heap) + size*sizeof(int));
+  		toSort->size = size;
+   		toSort->length = size;
+   		
+   		for (int j = 0; j < size; j++) {
+            toSort->arr[j] = arraysToSort[i][j];
+        }
+        
+        heapSort(toSort);
+        
+        assert(compareArrays(toSort->arr, arraysToMatch[i], sizeToSort[i]) == TRUE);
+        
+        free(toSort);
     }
 
+	int size = 10;
+        
+	toSort = malloc(sizeof(Heap) + size*sizeof(int));
+	toSort->size = size;
+	toSort->length = size;
+	
+	for (int k = 0; k < size; k++) {
+		toSort->arr[k] = testSort[k];
+	}
+	
+	//see that the max is indeed 10 and was removed from the heap
+	assert(10 == heap_extract_max(toSort));
+	int noMax[9] = {9, 8, 6, 7, 2, 5, 4, 3, 1};
+	assert(compareArrays(toSort->arr, noMax, size-1) == TRUE);
+    
+    //see that 10 is correctly added to the array
+    max_heap_insert(toSort, 10);
+    int insert[9] = {10, 9, 8, 7, 2, 6, 4, 3, 1};
+    assert(compareArrays(toSort->arr, insert, size-1) == TRUE);
+
+    free(toSort);
     
     // If no tests fail and abort the program, then all tests have passed
     printf("All tests passed.\n");
