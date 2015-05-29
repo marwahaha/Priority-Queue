@@ -1,49 +1,47 @@
 //  priority.c
-//  V2, 05/21/15
+//  VF, 05/28/15
 //  Created by Jeffrey
 
-#include "heapFunctions.h"
-#include "priorityFunctions.h"
+#include "heapFunctions.c"
+#include "priorityFunctions.c"
 
 int main(int argc, char *argv[]) {
 	
-	Heap *toSort;
     int size = argc - 2;
   	
+  	// Initializes the heap
+  	Heap *toSort;
   	toSort = malloc(sizeof(Heap) + size*sizeof(int));
-    toSort->size = size;
+  	toSort->size = size;
     toSort->length = size;
-  
-    int i;
-    
+  	toSort->arr = (int*)malloc(sizeof(int) * size);
+  	
     if (argc <= 2) {
         printf("You are missing arguments.\n");
     }
     
     else {
-
-        for (i = 2; i < argc; i++) {
+    	
+    	// Adds keys to the heap
+        for (int i = 2; i < argc; i++) {
             toSort->arr[i-2] = atoi(argv[i]);
         }
-        
+                
+        // Sorts the heap or creates a priority queue
         switch (tolower(argv[1][0])) {
             case 'h':
-                heapSort(toSort);
-                printArray(toSort);
+                heap_sort(toSort);
+                print_heap(toSort);
+                free(toSort);
                 break;
             case 'p':
             	build_max_heap(toSort);
-                preformPriority(toSort);
-                printArray(toSort);
+                preform_priority(toSort);
                 break;
             default:
                 break;
         }
-        
     }
-    
-    printf("\n");
-    free(toSort);
-    
+
     return 0;
 }
