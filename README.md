@@ -9,4 +9,4 @@
 - Again, make sure they're seperated by spaces!     
 > ./priority priority 10 9 5 7 8 20
 - An onscreen menu should appear and guide you through the operations you can preform. 
-- Elements are generated randomly and are dealt with automatically as they're seen as strictly abritrary.
+- Elements are generated randomly and are dealt with automatically as they're seen as strictly arbitrary.
